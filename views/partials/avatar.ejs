@@ -1,0 +1,5 @@
+<% if (avatarUrl) { %>
+  <img src="<%= avatarUrl %>" alt="Avatar" class="avatar avatar-<%= taille || 'md' %>">
+<% } else { %>
+  <div class="avatar avatar-<%= taille || 'md' %> avatar-initiale"><%= nom ? nom.charAt(0).toUpperCase() : '?' %></div>
+<% } %>

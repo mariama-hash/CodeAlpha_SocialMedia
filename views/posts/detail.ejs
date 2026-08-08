@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Post de <%= post.Utilisateur.nom %> - DevConnect</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header>
+    <a href="/">&larr; Retour au fil</a>
+  </header>
+
+  <main>
+    <div class="post-carte">
+      <div class="post-header">
+        <%- include('../partials/avatar', { avatarUrl: post.Utilisateur.avatar, taille: 'sm' }) %>
+        <strong><%= post.Utilisateur.nom %></strong>
+      </div>
+      <p class="post-contenu"><%= post.contenu %></p>
+      <div class="post-actions">
+        <form action="/posts/like/<%= post.id %>" method="POST" class="like-form">
+          <button type="submit" class="btn-like <%= aLike ? 'like-actif' : '' %>">
+            ❤️ <%= post.Likes.length %>
+          </button>
+        </form>
+        <span class="commentaires-count">💬 <%= post.Commentaires.length %></span>
+      </div>
+    </div>
+
+    <div class="commentaires-section">
+      <h3>Commentaires</h3>
+
+      <form action="/posts/<%= post.id %>/commenter" method="POST" class="form-commentaire">
+        <input type="text" name="contenu" placeholder="Ajouter un commentaire..." required>
+        <button type="submit">Envoyer</button>
+      </form>
+
+      <% post.Commentaires.forEach(commentaire => { %>
+        <div class="commentaire">
+          <strong><%= commentaire.Utilisateur.nom %></strong>
+          <p><%= commentaire.contenu %></p>
+        </div>
+      <% }) %>
+    </div>
+  </main>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>DevConnect - Accueil</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header>
+    <h1>DevConnect</h1>
+    <nav>
+      <span>Salut, <%= utilisateur.nom %></span>
+      <a href="/profil/<%= utilisateur.id %>">Mon profil</a>
+      <a href="/auth/deconnexion">Déconnexion</a>
+    </nav>
+  </header>
+
+  <main>
+    <form action="/posts/creer" method="POST" class="form-post">
+      <textarea name="contenu" placeholder="Partage ta progression, une astuce, une question..." required></textarea>
+      <button type="submit">Publier</button>
+    </form>
+
+    <div class="fil">
+      <% posts.forEach(post => { %>
+        <div class="post-carte">
+          <div class="post-header">
+            <%- include('../partials/avatar', { avatarUrl: post.Utilisateur.avatar, taille: 'sm' }) %>
+            <strong><%= post.Utilisateur.nom %></strong>
+          </div>
+          <p class="post-contenu"><%= post.contenu %></p>
+          <div class="post-actions">
+            <form action="/posts/like/<%= post.id %>" method="POST" class="like-form">
+              <button type="submit" class="btn-like <%= post.aLike ? 'like-actif' : '' %>">
+                ❤️ <%= post.Likes.length %>
+              </button>
+            </form>
+            <span class="commentaires-count">💬 <%= post.Commentaires.length %></span>
+            <% if (post.utilisateur_id === utilisateur.id) { %>
+              <form action="/posts/supprimer/<%= post.id %>" method="POST">
+                <button type="submit" class="btn-supprimer">Supprimer</button>
+              </form>
+            <% } %>
+          </div>
+          <a href="/posts/<%= post.id %>" class="voir-post">Voir les commentaires</a>
+        </div>
+      <% }) %>
+    </div>
+  </main>
+</body>
+</html>

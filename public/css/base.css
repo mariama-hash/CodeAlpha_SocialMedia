@@ -1,0 +1,84 @@
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Manrope:wght@400;500;600;700&display=swap');
+
+:root {
+  --color-violet: #4C3BCF;
+  --color-violet-light: #6C5CE0;
+  --color-teal: #22D3C5;
+  --color-coral: #FF4D6D;
+  --color-bg: #F7F7FB;
+  --color-charcoal: #1B1B2F;
+  --color-white: #FFFFFF;
+  --font-display: 'Sora', sans-serif;
+  --font-body: 'Manrope', sans-serif;
+  --radius: 10px;
+  --shadow: 0 2px 12px rgba(76, 59, 207, 0.08);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-body);
+  color: var(--color-charcoal);
+  background: var(--color-bg);
+  line-height: 1.6;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--color-charcoal);
+}
+
+a { color: var(--color-violet); text-decoration: none; }
+a:hover { color: var(--color-violet-light); }
+
+.btn {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 0.65rem 1.4rem;
+  border: none;
+  border-radius: var(--radius);
+  background: var(--color-violet);
+  color: var(--color-white);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.btn:hover { background: var(--color-violet-light); color: var(--color-white); }
+
+button { font-family: var(--font-body); cursor: pointer; }
+
+label {
+  display: block;
+  font-weight: 600;
+  font-size: 0.85rem;
+  margin-top: 1rem;
+  margin-bottom: 0.3rem;
+  color: var(--color-violet);
+}
+
+input, textarea {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid #E1DFF5;
+  border-radius: var(--radius);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  background: var(--color-white);
+}
+input:focus, textarea:focus {
+  outline: 2px solid var(--color-teal);
+  outline-offset: 1px;
+  border-color: var(--color-teal);
+}
+
+.erreur {
+  background: #FFEAEE;
+  color: var(--color-coral);
+  border-left: 3px solid var(--color-coral);
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius);
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}

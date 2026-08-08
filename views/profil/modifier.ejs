@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Modifier mon profil - DevConnect</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header>
+    <a href="/profil/<%= utilisateur.id %>">&larr; Retour à mon profil</a>
+  </header>
+
+  <main>
+    <h1>Modifier mon profil</h1>
+    <% if (erreur) { %>
+      <p class="erreur"><%= erreur %></p>
+    <% } %>
+    <form action="/profil/modifier" method="POST" enctype="multipart/form-data">
+      <label for="nom">Nom</label>
+      <input type="text" id="nom" name="nom" value="<%= utilisateur.nom %>" required>
+
+      <label for="bio">Bio</label>
+      <textarea id="bio" name="bio" placeholder="Parle un peu de toi..."><%= utilisateur.bio || '' %></textarea>
+
+      <label for="avatar">Photo de profil</label>
+      <input type="file" id="avatar" name="avatar" accept="image/png, image/jpeg, image/webp">
+
+      <button type="submit" class="btn">Enregistrer</button>
+    </form>
+  </main>
+</body>
+</html>
