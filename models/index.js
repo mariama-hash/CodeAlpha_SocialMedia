@@ -4,32 +4,46 @@ const Post = require('./Post');
 const Commentaire = require('./Commentaire');
 const Like = require('./Like');
 const Follow = require('./Follow');
+const Notification = require('./Notification');
+const CommentaireLike = require('./CommentaireLike');
+const Dislike = require('./Dislike');
 
-// Un utilisateur a plusieurs posts
 Utilisateur.hasMany(Post, { foreignKey: 'utilisateur_id' });
 Post.belongsTo(Utilisateur, { foreignKey: 'utilisateur_id' });
 
-// Un post a plusieurs commentaires
 Post.hasMany(Commentaire, { foreignKey: 'post_id' });
 Commentaire.belongsTo(Post, { foreignKey: 'post_id' });
 
-// Un utilisateur a plusieurs commentaires
 Utilisateur.hasMany(Commentaire, { foreignKey: 'utilisateur_id' });
 Commentaire.belongsTo(Utilisateur, { foreignKey: 'utilisateur_id' });
 
-// Un post a plusieurs likes
+Commentaire.belongsTo(Commentaire, { as: 'ParentCommentaire', foreignKey: 'parent_id' });
+Commentaire.hasMany(Commentaire, { as: 'Reponses', foreignKey: 'parent_id' });
+
 Post.hasMany(Like, { foreignKey: 'post_id' });
 Like.belongsTo(Post, { foreignKey: 'post_id' });
-
-// Un utilisateur a plusieurs likes
 Utilisateur.hasMany(Like, { foreignKey: 'utilisateur_id' });
 Like.belongsTo(Utilisateur, { foreignKey: 'utilisateur_id' });
 
-// Follow : relations multiples vers Utilisateur
+// Dislikes
+Post.hasMany(Dislike, { foreignKey: 'post_id' });
+Dislike.belongsTo(Post, { foreignKey: 'post_id' });
+Utilisateur.hasMany(Dislike, { foreignKey: 'utilisateur_id' });
+Dislike.belongsTo(Utilisateur, { foreignKey: 'utilisateur_id' });
+
+Commentaire.hasMany(CommentaireLike, { foreignKey: 'commentaire_id' });
+CommentaireLike.belongsTo(Commentaire, { foreignKey: 'commentaire_id' });
+Utilisateur.hasMany(CommentaireLike, { foreignKey: 'utilisateur_id' });
+CommentaireLike.belongsTo(Utilisateur, { foreignKey: 'utilisateur_id' });
+
 Follow.belongsTo(Utilisateur, { as: 'Follower', foreignKey: 'follower_id' });
 Follow.belongsTo(Utilisateur, { as: 'Following', foreignKey: 'following_id' });
 Utilisateur.hasMany(Follow, { as: 'Abonnements', foreignKey: 'follower_id' });
 Utilisateur.hasMany(Follow, { as: 'Abonnes', foreignKey: 'following_id' });
+
+Notification.belongsTo(Utilisateur, { as: 'Destinataire', foreignKey: 'destinataire_id' });
+Notification.belongsTo(Utilisateur, { as: 'Source', foreignKey: 'source_id' });
+Notification.belongsTo(Post, { foreignKey: 'post_id' });
 
 module.exports = {
   sequelize,
@@ -37,5 +51,8 @@ module.exports = {
   Post,
   Commentaire,
   Like,
-  Follow
+  Follow,
+  Notification,
+  CommentaireLike,
+  Dislike
 };

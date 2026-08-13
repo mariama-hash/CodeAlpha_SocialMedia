@@ -1,10 +1,15 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
   <meta charset="UTF-8">
-  <title><%= profil.nom %> - DevConnect</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>
+    <%= profil.nom %> - DevConnect
+  </title>
   <link rel="stylesheet" href="/css/style.css">
 </head>
+
 <body>
   <header>
     <a href="/">&larr; Retour au fil</a>
@@ -12,39 +17,52 @@
 
   <main>
     <div class="profil-header">
-      <%- include('../partials/avatar', { avatarUrl: profil.avatar, taille: 'lg' }) %>
-      <h1><%= profil.nom %></h1>
-      <p class="bio"><%= profil.bio || 'Pas encore de bio.' %></p>
+      <%- include('../partials/avatar', { avatarUrl: profil.avatar, nom: profil.nom, taille: 'lg' }) %>
+        <h1>
+          <%= profil.nom %>
+        </h1>
+        <p class="bio">
+          <%= profil.bio || 'Pas encore de bio.' %>
+        </p>
 
-      <div class="profil-stats">
-        <span><strong><%= posts.length %></strong> posts</span>
-        <span><strong><%= nbAbonnes %></strong> abonnés</span>
-        <span><strong><%= nbAbonnements %></strong> abonnements</span>
-      </div>
+        <div class="profil-stats">
+          <span><strong>
+              <%= posts.length %>
+            </strong> posts</span>
+          <a href="/profil/<%= profil.id %>/abonnes"><strong>
+              <%= nbAbonnes %>
+            </strong> abonnés</a>
+          <a href="/profil/<%= profil.id %>/abonnements"><strong>
+              <%= nbAbonnements %>
+            </strong> abonnements</a>
+        </div>
 
-      <% if (estMonProfil) { %>
-        <a href="/profil/modifier" class="btn">Modifier mon profil</a>
-      <% } else { %>
-        <form action="/profil/<%= profil.id %>/follow" method="POST">
-          <button type="submit" class="btn <%= suisDejaAbonne ? 'btn-suivi' : '' %>">
-            <%= suisDejaAbonne ? 'Abonné ✓' : 'Suivre' %>
-          </button>
-        </form>
-      <% } %>
+        <% if (estMonProfil) { %>
+          <a href="/profil/modifier" class="btn">Modifier mon profil</a>
+          <% } else { %>
+            <form action="/profil/<%= profil.id %>/follow" method="POST">
+              <button type="submit" class="btn <%= suisDejaAbonne ? 'btn-suivi' : '' %>">
+                <%= suisDejaAbonne ? 'Abonné ✓' : 'Suivre' %>
+              </button>
+            </form>
+            <% } %>
     </div>
 
     <div class="fil">
-      <% posts.forEach(post => { %>
+      <% posts.forEach(post=> { %>
         <div class="post-carte">
-          <p class="post-contenu"><%= post.contenu %></p>
+          <p class="post-contenu">
+            <%= post.contenu %>
+          </p>
           <div class="post-actions">
             <span>❤️ <%= post.Likes.length %></span>
             <span>💬 <%= post.Commentaires.length %></span>
           </div>
           <a href="/posts/<%= post.id %>" class="voir-post">Voir les commentaires</a>
         </div>
-      <% }) %>
+        <% }) %>
     </div>
   </main>
 </body>
+
 </html>

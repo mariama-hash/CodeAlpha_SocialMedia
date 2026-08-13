@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications - DevConnect</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+    <header>
+        <a href="/">&larr; Retour au fil</a>
+    </header>
+
+    <main>
+        <h1>Notifications</h1>
+
+        <% if (notifications.length===0) { %>
+            <p>Aucune notification pour le moment.</p>
+            <% } else { %>
+                <div class="liste-notifications">
+                    <% notifications.forEach(n=> { %>
+                        <div class="notification-carte <%= n.lu ? '' : 'non-lue' %>">
+                            <% if (n.type==='like' ) { %>
+                                <p><strong>
+                                        <%= n.Source.nom %>
+                                    </strong> a aimé votre publication</p>
+                                <% } else if (n.type==='commentaire' ) { %>
+                                    <p><strong>
+                                            <%= n.Source.nom %>
+                                        </strong> a commenté votre publication</p>
+                                    <% } else if (n.type==='follow' ) { %>
+                                        <p><strong>
+                                                <%= n.Source.nom %>
+                                            </strong> a commencé à vous suivre</p>
+                                        <% } else if (n.type==='reponse' ) { %>
+                                            <p><strong>
+                                                    <%= n.Source.nom %>
+                                                </strong> a répondu à votre commentaire</p>
+                                            <% } else if (n.type==='like_commentaire' ) { %>
+                                                <p><strong>
+                                                        <%= n.Source.nom %>
+                                                    </strong> a aimé votre commentaire</p>
+                                                <% } else if (n.type==='nouveau_post' ) { %>
+                                                    <p><strong>
+                                                            <%= n.Source.nom %>
+                                                        </strong> a publié quelque chose de nouveau</p>
+                                                    <% } %>
+                                                        <% if (n.post_id) { %>
+                                                            <a href="/posts/<%= n.post_id %>" class="notif-lien">Voir la
+                                                                publication</a>
+                                                            <% } %>
+                        </div>
+                        <% }) %>
+                </div>
+                <% } %>
+    </main>
+</body>
+
+</html>

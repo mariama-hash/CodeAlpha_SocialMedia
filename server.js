@@ -17,9 +17,11 @@ app.use(session({
   resave: false,
   saveUninitialized: false
 }));
-
+app.use(require('./middlewares/notifications'));
+app.use(require('./middlewares/flash'));
+app.use('/notifications', require('./routes/notificationRoutes'));
 app.use('/auth', require('./routes/authRoutes'));
-
+app.use('/recherche', require('./routes/rechercheRoutes'));
 app.use('/', require('./routes/postRoutes'));
 app.use('/posts', require('./routes/postRoutes'));
 app.use('/profil', require('./routes/profilRoutes'));

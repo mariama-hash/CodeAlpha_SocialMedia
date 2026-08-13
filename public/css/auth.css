@@ -30,3 +30,7 @@ body {
 }
 .form-container button:hover { background: var(--color-violet-light); }
 .form-container p { text-align: center; margin-top: 1rem; font-size: 0.85rem; }
+
+@media (max-width: 480px) {
+  .form-container { margin: 1rem; padding: 1.75rem; }
+}

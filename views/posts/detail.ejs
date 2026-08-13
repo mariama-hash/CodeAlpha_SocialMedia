@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Post de <%= post.Utilisateur.nom %> - DevConnect</title>
   <link rel="stylesheet" href="/css/style.css">
 </head>
+
 <body>
   <header>
     <a href="/">&larr; Retour au fil</a>
@@ -13,18 +16,28 @@
   <main>
     <div class="post-carte">
       <div class="post-header">
-        <%- include('../partials/avatar', { avatarUrl: post.Utilisateur.avatar, taille: 'sm' }) %>
-        <strong><%= post.Utilisateur.nom %></strong>
+        <%- include('../partials/avatar', { avatarUrl: post.Utilisateur.avatar, nom: post.Utilisateur.nom, taille: 'sm'
+          }) %>
+          <strong>
+            <%= post.Utilisateur.nom %>
+          </strong>
       </div>
-      <p class="post-contenu"><%= post.contenu %></p>
-      <div class="post-actions">
-        <form action="/posts/like/<%= post.id %>" method="POST" class="like-form">
-          <button type="submit" class="btn-like <%= aLike ? 'like-actif' : '' %>">
-            ❤️ <%= post.Likes.length %>
-          </button>
-        </form>
-        <span class="commentaires-count">💬 <%= post.Commentaires.length %></span>
-      </div>
+      <p class="post-contenu">
+        <%= post.contenu %>
+      </p>
+      <% if (post.image) { %>
+        <img src="<%= post.image %>" alt="Image du post" class="post-image">
+        <% } %>
+          <div class="post-actions">
+            <form action="/posts/like/<%= post.id %>" method="POST" class="like-form">
+              <button type="submit" class="btn-like <%= aLike ? 'like-actif' : '' %>">
+                <%- include('../partials/icon-heart') %>
+                  <%= post.Likes.length %>
+              </button>
+            </form>
+            <span class="commentaires-count"><%- include('../partials/icon-comment') %>
+                <%= post.Commentaires.length %></span>
+          </div>
     </div>
 
     <div class="commentaires-section">
@@ -35,13 +48,79 @@
         <button type="submit">Envoyer</button>
       </form>
 
-      <% post.Commentaires.forEach(commentaire => { %>
+      <% post.Commentaires.forEach(commentaire=> { %>
         <div class="commentaire">
-          <strong><%= commentaire.Utilisateur.nom %></strong>
-          <p><%= commentaire.contenu %></p>
+          <strong>
+            <%= commentaire.Utilisateur.nom %>
+          </strong>
+          <p>
+            <%= commentaire.contenu %>
+          </p>
+
+          <div class="commentaire-actions">
+            <form action="/posts/commentaire/like/<%= commentaire.id %>" method="POST" class="like-form">
+              <% const aLikeCommentaire=commentaire.CommentaireLikes.some(l=> l.utilisateur_id === utilisateurId); %>
+                <button type="submit" class="btn-like-mini <%= aLikeCommentaire ? 'like-actif' : '' %>">
+                  <%- include('../partials/icon-heart') %>
+                    <%= commentaire.CommentaireLikes.length %>
+                </button>
+            </form>
+            <button type="button" class="btn-repondre"
+              onclick="document.getElementById('reponse-<%= commentaire.id %>').classList.toggle('visible')">
+              Répondre
+            </button>
+            <% if (commentaire.utilisateur_id===utilisateurId) { %>
+              <form action="/posts/commentaire/supprimer/<%= commentaire.id %>" method="POST">
+                <button type="submit" class="btn-lien-supprimer">Supprimer</button>
+              </form>
+              <% } %>
+          </div>
+
+          <form id="reponse-<%= commentaire.id %>" action="/posts/<%= post.id %>/commenter" method="POST"
+            class="form-reponse">
+            <input type="hidden" name="parent_id" value="<%= commentaire.id %>">
+            <input type="text" id="champ-reponse-<%= commentaire.id %>" name="contenu"
+              placeholder="Répondre à <%= commentaire.Utilisateur.nom %>..." required>
+            <button type="submit">Envoyer</button>
+          </form>
+
+          <% if (commentaire.Reponses && commentaire.Reponses.length> 0) { %>
+            <div class="reponses-liste">
+              <% commentaire.Reponses.forEach(reponse=> { %>
+                <div class="reponse">
+                  <strong>
+                    <%= reponse.Utilisateur.nom %>
+                  </strong>
+                  <p>
+                    <%= reponse.contenu %>
+                  </p>
+                  <div class="commentaire-actions">
+                    <form action="/posts/commentaire/like/<%= reponse.id %>" method="POST" class="like-form">
+                      <% const aLikeReponse=reponse.CommentaireLikes.some(l=> l.utilisateur_id === utilisateurId); %>
+                        <button type="submit" class="btn-like-mini <%= aLikeReponse ? 'like-actif' : '' %>">
+                          <%- include('../partials/icon-heart') %>
+                            <%= reponse.CommentaireLikes.length %>
+                        </button>
+                    </form>
+                    <button type="button" class="btn-repondre"
+                      onclick="document.getElementById('reponse-<%= commentaire.id %>').classList.add('visible'); document.getElementById('champ-reponse-<%= commentaire.id %>').value = '@<%= reponse.Utilisateur.nom %> '; document.getElementById('champ-reponse-<%= commentaire.id %>').focus();">
+                      Répondre
+                    </button>
+                    <% if (reponse.utilisateur_id===utilisateurId) { %>
+                      <form action="/posts/commentaire/supprimer/<%= reponse.id %>" method="POST">
+                        <button type="submit" class="btn-lien-supprimer"><%- include('../partials/icon-trash') %>
+                            Supprimer</button>
+                      </form>
+                      <% } %>
+                  </div>
+                </div>
+                <% }) %>
+            </div>
+            <% } %>
         </div>
-      <% }) %>
+        <% }) %>
     </div>
   </main>
 </body>
+
 </html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>
+    <%= titre %> - DevConnect
+  </title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <header>
+    <a href="javascript:history.back()">&larr; Retour</a>
+  </header>
+
+  <main>
+    <h1>
+      <%= titre %>
+    </h1>
+
+    <% if (utilisateurs.length===0) { %>
+      <p>Personne à afficher ici pour le moment.</p>
+      <% } else { %>
+        <div class="liste-utilisateurs">
+          <% utilisateurs.forEach(u=> { %>
+            <div class="carte-utilisateur carte-recherche">
+              <a href="/profil/<%= u.id %>" class="lien-utilisateur">
+                <%- include('../partials/avatar', { avatarUrl: u.avatar, nom: u.nom, taille: 'sm' }) %>
+                  <span>
+                    <%= u.nom %>
+                  </span>
+              </a>
+              <% if (u.id !==utilisateurConnecteId) { %>
+                <form action="/profil/<%= u.id %>/follow" method="POST">
+                  <button type="submit" class="btn btn-sm <%= u.estSuivi ? 'btn-suivi' : '' %>">
+                    <%= u.estSuivi ? 'Abonné ✓' : 'Suivre' %>
+                  </button>
+                </form>
+                <% } %>
+            </div>
+            <% }) %>
+        </div>
+        <% } %>
+  </main>
+</body>
+
+</html>

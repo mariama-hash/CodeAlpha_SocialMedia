@@ -1,51 +1,100 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>DevConnect - Accueil</title>
   <link rel="stylesheet" href="/css/style.css">
 </head>
+
 <body>
   <header>
     <h1>DevConnect</h1>
     <nav>
       <span>Salut, <%= utilisateur.nom %></span>
+      <a href="/recherche">Recherche</a>
+      <a href="/notifications" class="lien-notif">
+        Notifications
+        <% if (unreadCount> 0) { %><span class="badge">
+            <%= unreadCount %>
+          </span>
+          <% } %>
+      </a>
       <a href="/profil/<%= utilisateur.id %>">Mon profil</a>
       <a href="/auth/deconnexion">Déconnexion</a>
     </nav>
   </header>
 
   <main>
-    <form action="/posts/creer" method="POST" class="form-post">
-      <textarea name="contenu" placeholder="Partage ta progression, une astuce, une question..." required></textarea>
-      <button type="submit">Publier</button>
-    </form>
+    <% if (message) { %>
+      <div class="flash-message">
+        <%= message %>
+      </div>
+      <% } %>
+        <form action="/posts/creer" method="POST" class="form-post" enctype="multipart/form-data">
+          <textarea name="contenu" placeholder="Partage ta progression, une astuce, une question..."
+            required></textarea>
+          <div class="attach-row">
+            <label for="post-image" class="btn-attach" title="Ajouter une image">+</label>
+            <input type="file" id="post-image" name="image" accept="image/png, image/jpeg, image/webp"
+              class="input-image-hidden"
+              onchange="document.getElementById('nom-fichier').textContent = this.files[0] ? this.files[0].name : ''">
+            <span id="nom-fichier" class="nom-fichier"></span>
+            <button type="submit" class="btn-publier">Publier</button>
+          </div>
+        </form>
 
-    <div class="fil">
-      <% posts.forEach(post => { %>
-        <div class="post-carte">
-          <div class="post-header">
-            <%- include('../partials/avatar', { avatarUrl: post.Utilisateur.avatar, taille: 'sm' }) %>
-            <strong><%= post.Utilisateur.nom %></strong>
-          </div>
-          <p class="post-contenu"><%= post.contenu %></p>
-          <div class="post-actions">
-            <form action="/posts/like/<%= post.id %>" method="POST" class="like-form">
-              <button type="submit" class="btn-like <%= post.aLike ? 'like-actif' : '' %>">
-                ❤️ <%= post.Likes.length %>
-              </button>
-            </form>
-            <span class="commentaires-count">💬 <%= post.Commentaires.length %></span>
-            <% if (post.utilisateur_id === utilisateur.id) { %>
-              <form action="/posts/supprimer/<%= post.id %>" method="POST">
-                <button type="submit" class="btn-supprimer">Supprimer</button>
-              </form>
-            <% } %>
-          </div>
-          <a href="/posts/<%= post.id %>" class="voir-post">Voir les commentaires</a>
+        <div class="fil">
+          <% posts.forEach(post=> { %>
+            <div class="post-carte">
+              <div class="post-header">
+                <%- include('../partials/avatar', { avatarUrl: post.Utilisateur.avatar, nom: post.Utilisateur.nom,
+                  taille: 'sm' }) %>
+                  <strong>
+                    <%= post.Utilisateur.nom %>
+                  </strong>
+                  <% if (post.utilisateur_id !==utilisateur.id) { %>
+                    <form action="/profil/<%= post.utilisateur_id %>/follow" method="POST" class="follow-mini">
+                      <button type="submit" class="btn-suivre-mini <%= post.estSuivi ? 'suivi' : '' %>">
+                        <%= post.estSuivi ? 'Abonné' : 'Suivre' %>
+                      </button>
+                    </form>
+                    <% } %>
+              </div>
+              <p class="post-contenu">
+                <%= post.contenu %>
+              </p>
+              <% if (post.image) { %>
+                <img src="<%= post.image %>" alt="Image du post" class="post-image">
+                <% } %>
+                  <div class="post-actions">
+                    <form action="/posts/like/<%= post.id %>" method="POST" class="like-form">
+                      <button type="submit" class="btn-like <%= post.aLike ? 'like-actif' : '' %>">
+                        <%- include('../partials/icon-heart') %>
+                          <%= post.Likes.length %>
+                      </button>
+                    </form>
+                    <form action="/posts/dislike/<%= post.id %>" method="POST" class="like-form">
+                      <button type="submit" class="btn-dislike <%= post.aDislike ? 'dislike-actif' : '' %>">
+                        <%- include('../partials/icon-dislike') %>
+                          <%= post.Dislikes.length %>
+                      </button>
+                    </form>
+                    <span class="commentaires-count"><%- include('../partials/icon-comment') %>
+                        <%= post.Commentaires.length %></span>
+                    <% if (post.utilisateur_id===utilisateur.id) { %>
+                      <form action="/posts/supprimer/<%= post.id %>" method="POST">
+                        <button type="submit" class="btn-supprimer"><%- include('../partials/icon-trash') %>
+                            Supprimer</button>
+                      </form>
+                      <% } %>
+                  </div>
+                  <a href="/posts/<%= post.id %>" class="voir-post">Voir les commentaires</a>
+            </div>
+            <% }) %>
         </div>
-      <% }) %>
-    </div>
   </main>
 </body>
+
 </html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recherche - DevConnect</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+    <header>
+        <a href="/">&larr; Retour au fil</a>
+    </header>
+
+    <main>
+        <h1>Rechercher un utilisateur</h1>
+        <form action="/recherche" method="GET" class="form-recherche">
+            <input type="text" name="q" value="<%= q %>" placeholder="Nom de l'utilisateur...">
+            <button type="submit" class="btn">Chercher</button>
+        </form>
+
+        <% if (q && resultats.length===0) { %>
+            <p>Aucun utilisateur trouvé pour "<%= q %>".</p>
+            <% } %>
+
+                <div class="liste-utilisateurs">
+                    <% resultats.forEach(u=> { %>
+                        <div class="carte-utilisateur carte-recherche">
+                            <a href="/profil/<%= u.id %>" class="lien-utilisateur">
+                                <%- include('../partials/avatar', { avatarUrl: u.avatar, nom: u.nom, taille: 'sm' }) %>
+                                    <span>
+                                        <%= u.nom %>
+                                    </span>
+                            </a>
+                            <form action="/profil/<%= u.id %>/follow" method="POST">
+                                <button type="submit" class="btn btn-sm <%= u.estSuivi ? 'btn-suivi' : '' %>">
+                                    <%= u.estSuivi ? 'Abonné ✓' : 'Suivre' %>
+                                </button>
+                            </form>
+                        </div>
+                        <% }) %>
+                </div>
+    </main>
+</body>
+
+</html>

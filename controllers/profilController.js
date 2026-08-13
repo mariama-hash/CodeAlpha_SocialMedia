@@ -40,6 +40,7 @@ exports.voirProfil = async (req, res) => {
 // Follow / unfollow (toggle)
 exports.toggleFollow = async (req, res) => {
   try {
+    const { Notification } = require('../models');
     const following_id = parseInt(req.params.id);
     const follower_id = req.session.utilisateur.id;
 
@@ -47,15 +48,23 @@ exports.toggleFollow = async (req, res) => {
       return res.redirect(`/profil/${following_id}`);
     }
 
+    const cible = await Utilisateur.findByPk(following_id);
     const relationExistante = await Follow.findOne({ where: { follower_id, following_id } });
 
     if (relationExistante) {
       await relationExistante.destroy();
+      req.session.flashMessage = `Vous ne suivez plus ${cible.nom}.`;
     } else {
       await Follow.create({ follower_id, following_id });
+      await Notification.create({
+        destinataire_id: following_id,
+        source_id: follower_id,
+        type: 'follow'
+      });
+      req.session.flashMessage = `Vous suivez maintenant ${cible.nom} !`;
     }
 
-    res.redirect(`/profil/${following_id}`);
+    res.redirect(req.get('Referrer') || `/profil/${following_id}`);
   } catch (err) {
     console.error(err);
     res.status(500).send('Erreur serveur');
@@ -89,6 +98,72 @@ exports.modifierProfil = async (req, res) => {
     req.session.utilisateur.nom = nom;
     req.session.utilisateur.avatar = utilisateur.avatar;
     res.redirect(`/profil/${utilisateur.id}`);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Erreur serveur');
+  }
+};
+
+// Liste des abonnés d'un utilisateur
+exports.voirAbonnes = async (req, res) => {
+  try {
+    const profilId = parseInt(req.params.id);
+    const utilisateurConnecteId = req.session.utilisateur.id;
+    const profil = await Utilisateur.findByPk(profilId);
+    if (!profil) return res.status(404).send('Utilisateur introuvable');
+
+    const relations = await Follow.findAll({
+      where: { following_id: profilId },
+      include: [{ model: Utilisateur, as: 'Follower' }]
+    });
+
+    const mesAbonnements = await Follow.findAll({ where: { follower_id: utilisateurConnecteId } });
+    const suivisIds = mesAbonnements.map(f => f.following_id);
+
+    const utilisateurs = relations.map(r => ({
+      ...r.Follower.toJSON(),
+      estSuivi: suivisIds.includes(r.Follower.id)
+    }));
+
+    res.render('profil/liste-utilisateurs', {
+      titre: `Abonnés de ${profil.nom}`,
+      utilisateurs,
+      utilisateurConnecteId,
+      utilisateur: req.session.utilisateur
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Erreur serveur');
+  }
+};
+
+// Liste des abonnements d'un utilisateur
+exports.voirAbonnements = async (req, res) => {
+  try {
+    const profilId = parseInt(req.params.id);
+    const utilisateurConnecteId = req.session.utilisateur.id;
+    const profil = await Utilisateur.findByPk(profilId);
+    if (!profil) return res.status(404).send('Utilisateur introuvable');
+
+    const relations = await Follow.findAll({
+      where: { follower_id: profilId },
+      include: [{ model: Utilisateur, as: 'Following' }]
+    });
+
+    const mesAbonnements = await Follow.findAll({ where: { follower_id: utilisateurConnecteId } });
+    const suivisIds = mesAbonnements.map(f => f.following_id);
+
+    const utilisateurs = relations.map(r => ({
+      ...r.Following.toJSON(),
+      estSuivi: suivisIds.includes(r.Following.id)
+    }));
+
+    res.render('profil/liste-utilisateurs', {
+      titre: `Abonnements de ${profil.nom}`,
+      utilisateurs,
+      utilisateurConnecteId,
+      utilisateur: req.session.utilisateur
+    });
   } catch (err) {
     console.error(err);
     res.status(500).send('Erreur serveur');

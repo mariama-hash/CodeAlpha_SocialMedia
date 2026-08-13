@@ -1,33 +1,37 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
-const Commentaire = sequelize.define('Commentaire', {
+const Notification = sequelize.define('Notification', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true
   },
+  destinataire_id: {
+    type: DataTypes.INTEGER,
+    allowNull: false
+  },
+  source_id: {
+    type: DataTypes.INTEGER,
+    allowNull: false
+  },
+  type: {
+    type: DataTypes.ENUM('like', 'commentaire', 'follow', 'reponse', 'like_commentaire', 'nouveau_post'),
+    allowNull: false
+  },
   post_id: {
-    type: DataTypes.INTEGER,
-    allowNull: false
-  },
-  utilisateur_id: {
-    type: DataTypes.INTEGER,
-    allowNull: false
-  },
-  parent_id: {
     type: DataTypes.INTEGER,
     allowNull: true
   },
-  contenu: {
-    type: DataTypes.TEXT,
-    allowNull: false
+  lu: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false
   }
 }, {
-  tableName: 'commentaires',
+  tableName: 'notifications',
   timestamps: true,
   createdAt: 'date_creation',
   updatedAt: false
 });
 
-module.exports = Commentaire;
+module.exports = Notification;
