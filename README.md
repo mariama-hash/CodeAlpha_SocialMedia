@@ -4,12 +4,23 @@ A mini social media platform built as part of the **Full Stack Development Inter
 
 ## 🚀 Features
 
-- **Authentication**: user registration, login, logout (sessions + bcrypt password hashing)
-- **Posts**: create, delete, and view posts in a live feed
-- **Likes**: toggle like/unlike on any post
-- **Comments**: comment on posts, view comment threads
-- **User profiles**: bio, custom avatar upload, post history, follower/following stats
+**Core (CodeAlpha requirements)**
+- **Authentication**: user registration, login, logout (sessions + bcrypt)
+- **Posts**: create, delete, view posts in a live feed
+- **Likes**: toggle like/unlike on posts
+- **Comments**: comment on posts
+- **User profiles**: bio, avatar, follower/following stats
 - **Follow system**: follow/unfollow other users
+
+**Extended features**
+- **Image posts**: attach an image to a post (Multer upload)
+- **Dislikes**: toggle dislike, mutually exclusive with likes
+- **Threaded replies**: reply to a comment, with mention support for back-and-forth discussion
+- **Comment likes**: like individual comments/replies
+- **Follow shortcuts**: follow/unfollow directly from the feed and from followers/following lists
+- **User search**: find and follow other users by name
+- **Notifications inbox**: unread badge covering likes, comments, replies, comment likes, follows, and new posts from followed users
+- **Custom SVG icons** and fully responsive layout (mobile-first fixes)
 
 ## 🛠 Tech Stack
 
@@ -17,17 +28,18 @@ A mini social media platform built as part of the **Full Stack Development Inter
 - **Database**: MySQL, Sequelize (ORM)
 - **Frontend**: EJS (server-side templates), HTML/CSS/JS
 - **Authentication**: bcrypt, express-session
-- **File uploads**: Multer (avatar images)
+- **File uploads**: Multer (avatars and post images)
 
 ## 📂 Project Structure
+
 CodeAlpha_SocialMedia/
 ├── config/ # Database configuration
 ├── controllers/ # Business logic
-├── middlewares/ # Auth guard, file upload handling
-├── models/ # Sequelize models (Utilisateur, Post, Commentaire, Like, Follow)
+├── middlewares/ # Auth guard, file upload handling, notification counter
+├── models/ # Sequelize models
 ├── routes/ # Express routes
-├── views/ # EJS templates (+ reusable partials)
-├── public/ # CSS, images, user-uploaded avatars
+├── views/ # EJS templates (+ reusable partials, SVG icons)
+├── public/ # CSS, images, user-uploaded avatars and post images
 └── server.js # Entry point
 
 
@@ -63,7 +75,7 @@ npm run dev
 
 The app will be running at `http://localhost:3001`
 
-## 👩‍💻 Author
+##  Author
 
 **SEYDOU Zouwéra** — L2 Software Engineering Student, ESIG Global Success (Lomé, Togo)
 Full Stack Development Internship — CodeAlpha (August 10 – September 10, 2026)
